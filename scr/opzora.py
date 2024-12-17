@@ -9,6 +9,7 @@ class OpZora(Request_main):
         super().__init__(file_name=file_name)
 
     async def run_module(self, key):
+        await super().run_module(key)
         try:
             proxy = None
             if USE_PROXY:
@@ -32,7 +33,7 @@ class OpZora(Request_main):
                 else:
                     logger.warning(f'Skip {key} amount {val}')
             else:
-                logger.warning(f'Wallet {key} not allowed')
+                logger.warning(f'Wallet {key} not elligable')
             
         except Exception as e:
             logger.error(e)

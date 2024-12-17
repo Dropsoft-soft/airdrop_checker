@@ -10,7 +10,7 @@ class Odos(Request_main):
         super().__init__(file_name)
 
     async def run_module(self, key):
-        super().run_module(key)
+        await super().run_module(key)
         try:
             proxy = None
             if USE_PROXY:
@@ -42,7 +42,7 @@ class Odos(Request_main):
                     logger.success(f'{k} amount:{val}')
                     self.success_array[k] = val
                 else:
-                    logger.warning(f'Skip {key} amount {val}')
+                    logger.warning(f'Skip {key} not elligable')
         
         except Exception as e:
             logger.error(e)
