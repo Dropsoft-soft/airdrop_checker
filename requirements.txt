@@ -3,3 +3,4 @@ openpyxl
 asyncio
 aiohttp==3.9.3
 aiohttp-proxy==0.1.2
+questionary==0.2.5
