@@ -2,6 +2,7 @@
 
 - Zora airdrop
 - Odos airdrop
+- Orbitrer airdrop checker
 
 ## 🔗 Links
 
