@@ -7,6 +7,8 @@ import sys
 import questionary
 from questionary import Choice
 
+from scr.orbitrer import Orbitrer
+
 '''Settings use or not use proxies and filename'''
 def get_module():
     result = questionary.select(
@@ -14,6 +16,8 @@ def get_module():
         choices=[
             Choice("1) Check zora airdrop", OpZora('op-zora.xlsx')),
             Choice("2) Check Odos airdrop", Odos('odos.xlsx')),
+            Choice("2) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
+
             Choice("99) Exit", "exit"),
         ],
         qmark="⚙️ ",
@@ -25,7 +29,7 @@ def get_module():
     return result
 
 if __name__ == "__main__":
-    checker =  get_module()
+    checker = get_module()
     if sys.platform == 'win32':
          asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     wallets = checker.get_wallets()

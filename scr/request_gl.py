@@ -10,7 +10,7 @@ from loguru import logger
 import time
 import json
 import aiohttp
-from scr.helper import WALLETS
+from scr.helper import WALLETS, ADRESSESS
 
 TIMEOUT = [10, 40]
 MAX_RETRY = 4
@@ -19,9 +19,10 @@ ERROR_CODE_FAILED_REQUEST = -2
 
 
 class Request_main():
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: str, use_addresses: bool = True):
         self.file_name = file_name
         self.success_array = {}
+        self.use_addresses = use_addresses
 
     async def global_request(self, method="get", request_retry=0, need_sleep= False, **kwargs):
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
@@ -111,10 +112,15 @@ class Request_main():
         asyncio.run(self.run_module(key))
 
     def get_wallets(self):
+        w = []
+        if self.use_addresses:
+            w = ADRESSESS
+        else:
+            w = WALLETS
         wallets = [
             {
                 "id": _id,
                 "key": key,
-            } for _id, key in enumerate(WALLETS, start=1)
+            } for _id, key in enumerate(w, start=1)
         ]
         return wallets

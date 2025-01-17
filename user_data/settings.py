@@ -1,1 +1,1 @@
-USE_PROXY = True
+USE_PROXY = False

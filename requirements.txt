@@ -3,4 +3,12 @@ openpyxl
 asyncio
 aiohttp==3.9.3
 aiohttp-proxy==0.1.2
-questionary==0.2.5
+questionary
+setuptools
+web3
+tqdm==4.65.0
+eth-account==0.8.0
+eth_utils
+eth_abi
+random-user-agent
+curl_cffi
