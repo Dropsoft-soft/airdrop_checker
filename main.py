@@ -3,10 +3,9 @@ from scr.opzora import OpZora
 import asyncio
 from loguru import logger
 from concurrent.futures import ThreadPoolExecutor
-import sys
+import sys, time
 import questionary
 from questionary import Choice
-
 from scr.orbitrer import Orbitrer
 
 '''Settings use or not use proxies and filename'''
