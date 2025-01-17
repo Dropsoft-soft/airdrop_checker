@@ -12,11 +12,11 @@ from scr.orbitrer import Orbitrer
 '''Settings use or not use proxies and filename'''
 def get_module():
     result = questionary.select(
-        "Select a method to get started",
+        "\nSubscribe – https://t.me/web3sftwr\n\n\nSelect a method to get started",
         choices=[
             Choice("1) Check zora airdrop", OpZora('op-zora.xlsx')),
             Choice("2) Check Odos airdrop", Odos('odos.xlsx')),
-            Choice("2) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
+            Choice("3) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
 
             Choice("99) Exit", "exit"),
         ],
