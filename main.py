@@ -1,3 +1,4 @@
+from scr.linea import Linea
 from scr.odos import Odos
 from scr.opzora import OpZora
 import asyncio
@@ -16,6 +17,7 @@ def get_module():
             Choice("1) Check zora airdrop", OpZora('op-zora.xlsx')),
             Choice("2) Check Odos airdrop", Odos('odos.xlsx')),
             Choice("3) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
+            Choice("4) Check Linea Poh", Linea('linea_poh.xlsx')),
 
             Choice("99) Exit", "exit"),
         ],
@@ -41,8 +43,12 @@ if __name__ == "__main__":
             )
 
     logger.info(f'{len(checker.success_array)} saving...')
-    for i in checker.success_array.keys():
-        checker.add_data(f'{i}', f'{checker.success_array[i]}')    
+    if checker.file_name == 'linea_poh.xlsx':
+        for i in checker.success_array.keys():
+            checker.add_data(f'{i}', f'{checker.success_array[i]}', 'poh')  
+    else:
+        for i in checker.success_array.keys():
+            checker.add_data(f'{i}', f'{checker.success_array[i]}')    
     logger.info(f'Finished')
         
 

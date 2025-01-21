@@ -80,13 +80,13 @@ class Request_main():
 
     
 
-    def add_data(self, wallet: str, amount: str):
+    def add_data(self, wallet: str, amount: str, amount_name: str = 'Amount'):
         if not os.path.exists(self.file_name):
             book = Workbook()
             sheet = book.active
             sheet['A1'] = 'Date Time'
             sheet['B1'] = 'Wallet'
-            sheet['C1'] = 'Amount'
+            sheet['C1'] = amount_name
         
             self.set_column_widths(sheet)
             book.save(self.file_name)
