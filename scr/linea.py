@@ -40,7 +40,7 @@ class Linea(Request_main):
                 'sec-fetch-site': 'same-site',
                 'user-agent': user_agent_rotator.get_random_user_agent(),
             }
-            status, result = await self.global_request(method='get', url=url, headers=headers, proxy=proxy)
+            status, result = await self.global_request(wallet=key, method='get', url=url, headers=headers, proxy=proxy)
             if 'poh' in result:
                 val = result['poh']
                 if val == True:

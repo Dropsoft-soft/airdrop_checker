@@ -34,7 +34,8 @@ if __name__ == "__main__":
     if sys.platform == 'win32':
          asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     wallets = checker.get_wallets()
-
+    checker.failed_wallet_clear()
+    
     with ThreadPoolExecutor(max_workers=5) as executor:
         for _, account in enumerate(wallets, start=1):
             executor.submit(

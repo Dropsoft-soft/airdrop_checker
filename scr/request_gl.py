@@ -17,16 +17,34 @@ MAX_RETRY = 4
 ERROR_CODE_EXCEPTION = -1
 ERROR_CODE_FAILED_REQUEST = -2
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(script_dir, '../wallet_with_errors.txt')
+
+
 
 class Request_main():
     def __init__(self, file_name: str, use_addresses: bool = True):
         self.file_name = file_name
         self.success_array = {}
         self.use_addresses = use_addresses
+    
+    def is_wallet_in_file(self, wallet):
+        with open(file_path, 'r') as file:
+            return wallet in file.read()
+    
+    def failed_wallet_append(self, wallet):
+        if not self.is_wallet_in_file(wallet):
+            with open(file_path, 'a') as file:
+                file.write(wallet + '\n')
+    
+    def failed_wallet_clear(self):
+        with open(file_path, 'w') as file:
+            pass
 
-    async def global_request(self, method="get", request_retry=0, need_sleep= False, **kwargs):
+    async def global_request(self, wallet: str = '', method="get", request_retry=0, need_sleep= False, **kwargs):
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
             if request_retry > MAX_RETRY:
+                self.failed_wallet_append(wallet)
                 return
             retry = 0
 
@@ -53,13 +71,14 @@ class Request_main():
                         if retry > 4:
                             message = f'[{kwargs["url"]}] request attempts reached max retries count'
                             logger.error(message)
+                            self.failed_wallet_append(wallet)
                             return ERROR_CODE_FAILED_REQUEST, message
 
                 except ConnectionError as error:
                     logger.error(f'HTTPSConnectionPool - {kwargs["url"]} failed to make request | {error}')
                     if need_sleep:
                         time.sleep(25)
-                    await self.global_request(method=method, request_retry=request_retry + 1, need_sleep=True, **kwargs)
+                    await self.global_request(wallet=wallet, method=method, request_retry=request_retry + 1, need_sleep=True, **kwargs)
                     break
 
                 except Exception as error:
