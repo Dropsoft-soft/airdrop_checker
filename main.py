@@ -1,3 +1,4 @@
+from scr.berachain import Berachain
 from scr.linea import Linea
 from scr.odos import Odos
 from scr.opzora import OpZora
@@ -18,6 +19,7 @@ def get_module():
             Choice("2) Check Odos airdrop", Odos('odos.xlsx')),
             Choice("3) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
             Choice("4) Check Linea Poh", Linea('linea_poh.xlsx')),
+            Choice("5) Check Berachain airdrop", Berachain('berachain.xlsx')),
 
             Choice("99) Exit", "exit"),
         ],
