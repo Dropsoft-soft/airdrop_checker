@@ -21,7 +21,7 @@ def get_module():
             Choice("3) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
             Choice("4) Check Linea Poh", Linea('linea_poh.xlsx')),
             Choice("5) Check Berachain airdrop", Berachain('berachain.xlsx')),
-            Choice("5) Check Zora airdrop", Zora('zora.xlsx')),
+            Choice("6) Check Zora airdrop", Zora('zora.xlsx')),
 
             Choice("99) Exit", "exit"),
         ],
