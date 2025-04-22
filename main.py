@@ -9,17 +9,19 @@ import sys, time
 import questionary
 from questionary import Choice
 from scr.orbitrer import Orbitrer
+from scr.zora import Zora
 
 '''Settings use or not use proxies and filename'''
 def get_module():
     result = questionary.select(
         "\nSubscribe – https://t.me/web3sftwr\n\n\nSelect a method to get started",
         choices=[
-            Choice("1) Check zora airdrop", OpZora('op-zora.xlsx')),
+            Choice("1) Check zora OP airdrop", OpZora('op-zora.xlsx')),
             Choice("2) Check Odos airdrop", Odos('odos.xlsx')),
             Choice("3) Check Orbitrer airdrop", Orbitrer('orbitrer.xlsx')),
             Choice("4) Check Linea Poh", Linea('linea_poh.xlsx')),
             Choice("5) Check Berachain airdrop", Berachain('berachain.xlsx')),
+            Choice("5) Check Zora airdrop", Zora('zora.xlsx')),
 
             Choice("99) Exit", "exit"),
         ],

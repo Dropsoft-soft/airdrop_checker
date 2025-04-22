@@ -1,8 +1,9 @@
 # Airdrop_checker
 
-- Zora airdrop
+- Zora OP airdrop
 - Odos airdrop
 - Orbitrer airdrop checker
+- Zora airdrop
 
 ## 🔗 Links
 
