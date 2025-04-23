@@ -1,2 +1,2 @@
 USE_PROXY = False
-SLEEP_TIME = (0,0)
+SLEEP_TIME = (30,50)

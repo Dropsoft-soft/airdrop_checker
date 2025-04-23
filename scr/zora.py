@@ -1,4 +1,6 @@
 
+from web3 import Web3
+from scr.web_client import WebClient
 from .request_gl import Request_main
 from scr.helper import WALLET_PROXIES, decimalToInt
 from user_data.settings import USE_PROXY
@@ -7,7 +9,7 @@ from loguru import logger
 
 class Zora(Request_main):
     def __init__(self, file_name: str):
-        super().__init__(file_name)
+        super().__init__(file_name, use_addresses=False)
 
     async def run_module(self, key):
         await super().run_module(key)
@@ -15,38 +17,21 @@ class Zora(Request_main):
             proxy = None
             if USE_PROXY:
                 proxy = WALLET_PROXIES[key]
-            lowercased = key.lower()
-            url = f'https://zora-checker.vercel.app/api/check-allocation'
-            headers = {
-            'accept': '*/*',
-            'accept-language': 'en-US,en;q=0.9,uk;q=0.8',
-            'cache-control': 'no-cache',
-            'content-type': 'application/json',
-            'origin': 'https://zora-checker.vercel.app',
-            'pragma': 'no-cache',
-            'priority': 'u=1, i',
-            'referer': 'https://zora-checker.vercel.app/',
-            'sec-ch-ua': '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"macOS"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-origin',
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36'
-            }
-            wall_json = {
-             "walletAddress": f"{key}"
-            }
-            status, result = await self.global_request(url=url, method="post", headers=headers, proxy=proxy, json=wall_json)
-            if result['totalTokens'] != None:
-                val = float(result['totalTokens'])
-                if val > 0:
-                    # val = decimalToInt(val, 18)
-                    k = f'{key}'
-                    logger.success(f'{k} amount:{val}')
-                    self.success_array[k] = val
-                else:
-                    logger.warning(f'Skip {key} not elligable')
+            web = WebClient(id=0, key=key, chain='base')
+            '0x0000000002ba96C69b95E32CAAB8fc38bAB8B3F8'
+            contract_pool = web.web3.eth.contract(address=Web3.to_checksum_address('0x0000000002ba96C69b95E32CAAB8fc38bAB8B3F8'),
+            abi=ABI_MINT_CONTRACT)
+            result = await contract_pool.functions.allocations(web.address).call()
+            print(result)
+            val = decimalToInt(result, 18)
+            if val > 0:
+                k = f'{web.address}'
+                logger.success(f'{k} amount:{val}')
+                self.success_array[k] = val
+            else:
+                logger.warning(f'Skip {web.address} not elligable')
         
         except Exception as e:
             logger.error(e)
+
+ABI_MINT_CONTRACT = '[{"inputs":[{"internalType":"address","name":"_allocationSetter","type":"address"},{"internalType":"address","name":"_admin","type":"address"},{"internalType":"address","name":"_token","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"target","type":"address"}],"name":"AddressEmptyCode","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"AddressInsufficientBalance","type":"error"},{"inputs":[],"name":"AllocationSetupAlreadyCompleted","type":"error"},{"inputs":[],"name":"AllocationSetupNotCompleted","type":"error"},{"inputs":[],"name":"AlreadyClaimed","type":"error"},{"inputs":[],"name":"ClaimNotOpen","type":"error"},{"inputs":[],"name":"ClaimOpened","type":"error"},{"inputs":[{"internalType":"uint256","name":"claimStart","type":"uint256"},{"internalType":"uint256","name":"currentTime","type":"uint256"}],"name":"ClaimStartInPast","type":"error"},{"inputs":[],"name":"FailedInnerCall","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"bytes32","name":"currentNonce","type":"bytes32"}],"name":"InvalidAccountNonce","type":"error"},{"inputs":[],"name":"InvalidShortString","type":"error"},{"inputs":[],"name":"InvalidSignature","type":"error"},{"inputs":[],"name":"InvalidToken","type":"error"},{"inputs":[],"name":"NoAllocation","type":"error"},{"inputs":[],"name":"OnlyAdmin","type":"error"},{"inputs":[],"name":"OnlyAllocationSetter","type":"error"},{"inputs":[{"internalType":"address","name":"token","type":"address"}],"name":"SafeERC20FailedOperation","type":"error"},{"inputs":[{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint256","name":"currentTime","type":"uint256"}],"name":"SignatureExpired","type":"error"},{"inputs":[{"internalType":"string","name":"str","type":"string"}],"name":"StringTooLong","type":"error"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"totalAllocation","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"claimStart","type":"uint256"}],"name":"AllocationSetupCompleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32[]","name":"allocations","type":"bytes32[]"}],"name":"AllocationsSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"claimTo","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Claimed","type":"event"},{"anonymous":false,"inputs":[],"name":"EIP712DomainChanged","type":"event"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"accountClaim","outputs":[{"components":[{"internalType":"uint96","name":"allocation","type":"uint96"},{"internalType":"bool","name":"claimed","type":"bool"}],"internalType":"struct IZoraTokenCommunityClaim.AccountClaim","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"allocationSetter","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"allocationSetupComplete","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"allocations","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_claimTo","type":"address"}],"name":"claim","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"claimIsOpen","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimStart","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"address","name":"_claimTo","type":"address"},{"internalType":"uint256","name":"_deadline","type":"uint256"},{"internalType":"bytes","name":"_signature","type":"bytes"}],"name":"claimWithSignature","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_claimStart","type":"uint256"},{"internalType":"address","name":"transferBalanceFrom","type":"address"}],"name":"completeAllocationSetup","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"eip712Domain","outputs":[{"internalType":"bytes1","name":"fields","type":"bytes1"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"version","type":"string"},{"internalType":"uint256","name":"chainId","type":"uint256"},{"internalType":"address","name":"verifyingContract","type":"address"},{"internalType":"bytes32","name":"salt","type":"bytes32"},{"internalType":"uint256[]","name":"extensions","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDomainSeparator","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"hasClaimed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"bytes32","name":"nonce","type":"bytes32"}],"name":"nonceUsed","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32[]","name":"packedData","type":"bytes32[]"}],"name":"setAllocations","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32[]","name":"packedData","type":"bytes32[]"},{"internalType":"bytes32","name":"nonce","type":"bytes32"},{"internalType":"bytes","name":"signature","type":"bytes"}],"name":"setAllocationsWithSignature","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"token","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalAllocated","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_claimStart","type":"uint256"}],"name":"updateClaimStart","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
